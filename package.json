@@ -1,0 +1,19 @@
+{
+  "name": "chat-application",
+  "version": "1.0.0",
+  "description": "rifat node.js chat-application",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rifathossain-web/chat-application.git"
+  },
+  "author": "Rifat",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rifathossain-web/chat-application/issues"
+  },
+  "homepage": "https://github.com/rifathossain-web/chat-application#readme"
+}
