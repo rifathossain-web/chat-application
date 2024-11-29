@@ -1,0 +1,143 @@
+/* Container for responsive table */
+.container {
+  overflow-x: auto; /* Enables horizontal scroll for very small screens if needed */
+  max-width: 100%;
+}
+
+/* Table styling */
+.table {
+  border: 1px solid #374151;
+  width: 100%;
+  table-layout: fixed; 
+  /* 
+  Fixed layout to control column widths 
+  */
+  font-size: 0.8rem; /* Base font size for compact view */
+}
+
+/* Header Row Styling */
+.headerRow {
+  /* background-color: #f3f4f6; */
+  font-size: 0.8rem; /* Smaller font for headers */
+}
+
+/* Header Cell Styling */
+.headerCell {
+  padding-top: 0px;
+  padding-bottom: 10px;
+  border: 1px solid #374151;
+  text-align: center;
+  white-space: normal; /* Allows text to wrap */
+  word-wrap: break-word; /* Breaks long words */
+}
+
+/* Sub Header Cell Styling */
+.subHeaderCell {
+  padding-top: 0px;
+  padding-bottom: 10px;
+  border: 1px solid #374151;
+  font-size: 0.8rem;
+  text-align: center;
+  white-space: normal; /* Allows text to wrap */
+  word-wrap: break-word; /* Breaks long words */
+}
+
+/* Data Row Styling */
+.dataRow {
+  /* background-color: #ffffff; */
+  font-size: 0.75rem; /* Smaller font for data rows */
+}
+
+.dataRow:nth-child(even) {
+  /* background-color: #f9fafb; */
+}
+
+/* Cell Styling */
+.cell {
+  padding-bottom: 10px;
+  border: 1px solid #374151;
+  white-space: nowrap;
+  text-align: center;
+  
+}
+
+/* Button Styling */
+.editButton,
+.deleteButton {
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+  color: #ffffff;
+  font-size: 0.7rem; /* Smaller font */
+  transition: background-color 0.3s;
+}
+
+.editButton {
+  background-color: #3b82f6;
+}
+
+.editButton:hover {
+  background-color: #2563eb;
+}
+
+.deleteButton {
+  background-color: #ef4444;
+}
+
+.deleteButton:hover {
+  background-color: #dc2626;
+}
+
+/* Responsive Scaling Adjustments */
+@media (max-width: 1024px) {
+  .table {
+    font-size: 0.75rem; /* Scale down font size on medium screens */
+  }
+  .headerCell,
+  .subHeaderCell {
+    padding: 0.4rem 0.8rem; /* Adjust padding for medium screens */
+  }
+  .cell {
+    padding: 0.2rem 0.4rem; /* Compact data cell padding */
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    overflow-x: hidden;
+    transform: scale(0.9); /* Scale down slightly to fit in viewport */
+    transform-origin: top left;
+  }
+  .headerCell,
+  .subHeaderCell {
+    padding: 0.3rem 0.6rem; /* Adjust padding for tablets */
+  }
+  .cell {
+    padding: 0.15rem 0.3rem; /* Further reduce data cell padding */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    transform: scale(0.8); /* Scale down further for small devices */
+    transform-origin: top left;
+  }
+  .headerCell,
+  .subHeaderCell {
+    padding: 0.2rem 0.4rem; /* Minimal padding for small devices */
+    font-size: 0.7rem; /* Smaller font */
+  }
+  .cell {
+    padding: 0.1rem 0.2rem; /* Minimal padding for data cells */
+    font-size: 0.7rem; /* Smaller font */
+  }
+}
+
+/* Print-specific styles */
+@media print {
+  .container {
+    transform: scale(1); /* Reset scaling for print */
+  }
+  .table {
+    font-size: 0.75rem;
+  }
+}
