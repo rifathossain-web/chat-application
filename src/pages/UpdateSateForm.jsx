@@ -160,7 +160,7 @@ const UpdateStateForm = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(`/api/helicopters/serial/${heliSerNo}`);
+      const response = await axios.get(`https://airstate-server.vercel/api/helicopters/serial/${heliSerNo}`);
       const data = response.data;
       setPreviousData(data);
 
@@ -259,7 +259,7 @@ const UpdateStateForm = () => {
 
     // Check for duplicate submission
     try {
-      const response = await axios.get(`/api/helicopterLogs/logs/checkDuplicate`, {
+      const response = await axios.get(`https://airstate-server.vercel/api/helicopterLogs/logs/checkDuplicate`, {
         params: {
           heliSerNo: values.heliSerNo,
           date: values.date,
@@ -443,7 +443,7 @@ const UpdateStateForm = () => {
   /** Submit Helicopter Log **/
   const submitHelicopterLog = async (data) => {
     try {
-      const response = await axios.post(`/api/helicopterLogs/log`, data);
+      const response = await axios.post(`https://airstate-server.vercel/api/helicopterLogs/log`, data);
       message.success("Log data saved successfully!");
       console.log("Log Server response:", response.data);
     } catch (error) {
@@ -460,7 +460,7 @@ const UpdateStateForm = () => {
         .split(/±|\+|-/)[0]
         .trim();
       const response = await axios.put(
-        `/api/helicopters/serial/${data.heliSerNo}`,
+        `https://airstate-server.vercel/api/helicopters/serial/${data.heliSerNo}`,
         {
           heliPresentHrs: data.heliPresentHrs,
           engPresentHrsL: data.engPresentHrsL,

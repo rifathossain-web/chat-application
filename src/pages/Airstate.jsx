@@ -28,7 +28,7 @@ const Airstate = () => {
 
   const fetchHelicopterLogsByDate = async (apidate) => {
     try {
-      const response = await axios.get(`/api/helicopterLogs/logs`, {
+      const response = await axios.get(`https://airstate-server.vercel/api/helicopterLogs/logs`, {
         params: { date: apidate },
       });
       if (response.data.length > 0) {
@@ -52,7 +52,7 @@ const Airstate = () => {
 
   const handleEdit = async (updatedRecord) => {
     try {
-      await axios.put(`/api/helicopterLogs/log/${updatedRecord._id}`, updatedRecord);
+      await axios.put(`https://airstate-server.vercel/api/helicopterLogs/log/${updatedRecord._id}`, updatedRecord);
       setLogs((prevLogs) =>
         prevLogs.map((log) =>
           log._id === updatedRecord._id ? updatedRecord : log
@@ -66,7 +66,7 @@ const Airstate = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/helicopterLogs/log/${id}`);
+      await axios.delete(`https://airstate-server.vercel/api/helicopterLogs/log/${id}`);
       setLogs((prevLogs) => prevLogs.filter((log) => log._id !== id));
       message.success("Log deleted successfully");
     } catch (error) {

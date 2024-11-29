@@ -55,7 +55,7 @@ const AlHeli = () => {
   const fetchHelicopters = async () => {
     setLoading(true); // Start the loader
     try {
-      const { data } = await axios.get(`/api/helicopters`);
+      const { data } = await axios.get(`https://airstate-server.vercel/api/helicopters`);
       setHelicopters(data);
     } catch (error) {
       message.error('Error fetching helicopters: ' + error.message);
@@ -119,7 +119,7 @@ const AlHeli = () => {
       try {
         if (editingHeli) {
           // Update existing helicopter
-          await axios.put(`/api/helicopters/${editingHeli._id}`, formValues);
+          await axios.put(`https://airstate-server.vercel/api/helicopters/${editingHeli._id}`, formValues);
           setHelicopters((prevHelicopters) =>
             prevHelicopters.map((heli) =>
               heli._id === editingHeli._id ? { ...heli, ...formValues } : heli
@@ -128,7 +128,7 @@ const AlHeli = () => {
           message.success('Helicopter updated successfully');
         } else {
           // Add new helicopter
-          const { data } = await axios.post(`/api/helicopters`, formValues);
+          const { data } = await axios.post(`https://airstate-server.vercel/api/helicopters`, formValues);
           setHelicopters([...helicopters, { ...data, image: 'https://via.placeholder.com/300x200?text=' + data.heliSerNo }]);
           message.success('Helicopter added successfully');
         }
@@ -153,7 +153,7 @@ const AlHeli = () => {
   const handleDelete = async (heliId) => {
     setLoading(true); // Start the loader
     try {
-      await axios.delete(`/api/helicopters/${heliId}`);
+      await axios.delete(`https://airstate-server.vercel/api/helicopters/${heliId}`);
       setHelicopters(helicopters.filter((heli) => heli._id !== heliId));
       message.success('Helicopter deleted successfully');
     } catch (error) {
