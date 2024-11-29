@@ -1,7 +1,5 @@
-
-import { useRouteError } from "react-router-dom";
-import { Result, Button } from "antd";
-import { Link } from "react-router-dom";
+import { Button, Result } from "antd";
+import { Link, useRouteError } from "react-router-dom";
 
 const ErrorPage = () => {
   const error = useRouteError();
