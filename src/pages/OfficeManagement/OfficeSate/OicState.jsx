@@ -602,7 +602,7 @@ const OicState = () => {
       </style>
 
       {/* Title Section */}
-      <Row className="mb-4 text-center">
+      <Row className="text-center">
         <Col span={24}>
           <Title level={3} className="print-title">
             OIC State
