@@ -1,6 +1,11 @@
 // src/components/DailyOffice.jsx
 
-import { EditOutlined, PlusOutlined, SaveOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  PlusOutlined,
+  SaveOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import {
   Button,
   DatePicker,
@@ -18,9 +23,9 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import React, { useEffect, useState, useRef } from "react";
-import { useAuth } from "../../context/AuthContext";
+import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
+import { useAuth } from "../../context/AuthContext";
 
 // Extend Day.js with necessary plugins
 dayjs.extend(customParseFormat);
@@ -113,7 +118,11 @@ const DailyOffice = () => {
         "QCI",
         "Gale",
         "K/O",
-        "Airport Duty"
+        "Airport Duty",
+        "O/O",
+        "A/O",
+        "G/C",
+        "DEO DUTY",
       ],
     },
     {
@@ -176,7 +185,7 @@ const DailyOffice = () => {
       <div style={{ padding: 8 }}>
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex === 'name' ? 'Name' : 'BD/NO'}`}
+          placeholder={`Search ${dataIndex === "name" ? "Name" : "BD/NO"}`}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -203,17 +212,21 @@ const DailyOffice = () => {
       </div>
     ),
     filterIcon: (filtered) => (
-      <SearchOutlined
-        style={{ color: filtered ? "#1890ff" : undefined }}
-      />
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
-        ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+        ? record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
         : "",
     onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
-        setTimeout(() => searchInput.current && searchInput.current.select(), 100);
+        setTimeout(
+          () => searchInput.current && searchInput.current.select(),
+          100
+        );
       }
     },
     render: (text) =>
@@ -648,10 +661,7 @@ const DailyOffice = () => {
     const updatedData = {
       disposal: editDisposal,
       startDate: editDateRange[0], // 'DD-MM-YYYY' string
-      endDate:
-        editDateRange.length === 2
-          ? editDateRange[1]
-          : editDateRange[0], // 'DD-MM-YYYY' string
+      endDate: editDateRange.length === 2 ? editDateRange[1] : editDateRange[0], // 'DD-MM-YYYY' string
     };
 
     // Log updatedData for debugging
@@ -670,7 +680,10 @@ const DailyOffice = () => {
             ...item,
             disposal: response.data.disposal.disposal,
             dateRange: response.data.disposal.endDate
-              ? [response.data.disposal.startDate, response.data.disposal.endDate]
+              ? [
+                  response.data.disposal.startDate,
+                  response.data.disposal.endDate,
+                ]
               : [response.data.disposal.startDate],
             existingDisposal: {
               disposal: response.data.disposal.disposal,
@@ -714,7 +727,7 @@ const DailyOffice = () => {
   // Define table columns with search on 'name' and 'bdNo' columns
   const columns = [
     { title: "SL", dataIndex: "sl", key: "sl", width: 50 },
-    
+
     // BD/NO Column with Search
     {
       title: "BD/NO",
@@ -724,14 +737,18 @@ const DailyOffice = () => {
       ...getColumnSearchProps("bdNo"), // Adding search functionality
       sorter: (a, b) => a.bdNo.localeCompare(b.bdNo), // Optional: Add sorting
     },
-    
-    { title: "RANK", dataIndex: "rank", key: "rank", width: 100,
+
+    {
+      title: "RANK",
+      dataIndex: "rank",
+      key: "rank",
+      width: 100,
       // Adding filter for RANK
       filters: getUniqueValues(dataSource, "rank"),
       onFilter: (value, record) => record.rank === value,
       sorter: (a, b) => a.rank.localeCompare(b.rank), // Optional: Add sorting
     },
-    
+
     {
       title: "NAME",
       dataIndex: "name",
@@ -740,18 +757,18 @@ const DailyOffice = () => {
       ...getColumnSearchProps("name"), // Adding search functionality
       sorter: (a, b) => a.name.localeCompare(b.name), // Optional: Add sorting
     },
-    
-    { 
-      title: "TRADE", 
-      dataIndex: "trade", 
-      key: "trade", 
+
+    {
+      title: "TRADE",
+      dataIndex: "trade",
+      key: "trade",
       width: 150,
       // Adding filter for TRADE
       filters: getUniqueValues(dataSource, "trade"),
       onFilter: (value, record) => record.trade === value,
       sorter: (a, b) => a.trade.localeCompare(b.trade), // Optional: Add sorting
     },
-    
+
     {
       title: "DISPOSAL",
       dataIndex: "disposal",
@@ -759,8 +776,10 @@ const DailyOffice = () => {
       width: 200,
       // Adding filter for DISPOSAL
       filters: disposalOptions
-        .flatMap(option => typeof option === "object" ? option.subOptions : [option])
-        .map(disposal => ({ text: disposal, value: disposal })),
+        .flatMap((option) =>
+          typeof option === "object" ? option.subOptions : [option]
+        )
+        .map((disposal) => ({ text: disposal, value: disposal })),
       onFilter: (value, record) => record.disposal === value,
       sorter: (a, b) => (a.disposal || "").localeCompare(b.disposal || ""),
       render: (text, record) => (
@@ -827,7 +846,7 @@ const DailyOffice = () => {
         </Select>
       ),
     },
-    
+
     {
       title: "Date Range",
       key: "dateRange",
@@ -872,7 +891,7 @@ const DailyOffice = () => {
         );
       },
     },
-    
+
     {
       title: "Existing Disposal",
       key: "existingDisposal",
@@ -910,7 +929,7 @@ const DailyOffice = () => {
         return null;
       },
     },
-    
+
     {
       title: "Actions",
       key: "actions",
