@@ -7,9 +7,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://airstate-server.vercel.app',
-        changeOrigin: true, // Ensures the origin header is set to the target URL
-        secure: true,       // Use secure connection for HTTPS
+        target: 'https://airstate-server.vercel.app', // Your Vercel Backend URL
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, ''), // If needed, adjust URL paths
       },
     },
   },

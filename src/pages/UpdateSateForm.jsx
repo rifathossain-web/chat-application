@@ -12,9 +12,9 @@ import {
   Spin,
   TimePicker,
 } from "antd";
-import axios from "axios";
 import dayjs from "dayjs"; // Using Day.js for date manipulation
 import { useCallback, useEffect, useState } from "react";
+import axiosInstance from "../axios";
 
 const { Option } = Select;
 
@@ -160,26 +160,18 @@ const UpdateStateForm = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/helicopters/serial/${heliSerNo}`);
+      const response = await axiosInstance.get(
+        `${import.meta.env.VITE_API_URL}/api/helicopters/serial/${heliSerNo}`
+      );
       const data = response.data;
       setPreviousData(data);
 
       form.setFieldsValue({
         // Initialize form fields with fetched data
-        totalLdg: data.totalLdg,
-        apuHrs: data.apuHrs,
-        apuSt: data.apuSt,
-        apuAB: data.apuAB,
+
         actionNotes: data.actionNotes || "",
         entryNotes: data.entryNotes || "",
         notes: data.notes || "",
-        sorties: data.sorties || "",
-        location: data.location || "",
-        inspectionCycle: data.inspectionCycle || "",
-        nextInspoh: data.nextInspoh || "",
-        acMis: data.acMis || "",
-        preRoleAndName: data.preRoleAndName || "",
-        supRoleAndName: data.supRoleAndName || "",
       });
       setNotesText(data.notes || "");
 
@@ -259,12 +251,17 @@ const UpdateStateForm = () => {
 
     // Check for duplicate submission
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/helicopterLogs/logs/checkDuplicate`, {
-        params: {
-          heliSerNo: values.heliSerNo,
-          date: values.date,
-        },
-      });
+      const response = await axiosInstance.get(
+        `${
+          import.meta.env.VITE_API_URL
+        }/api/helicopterLogs/logs/checkDuplicate`,
+        {
+          params: {
+            heliSerNo: values.heliSerNo,
+            date: values.date,
+          },
+        }
+      );
 
       console.log("Duplicate Check Response Status:", response.status);
       console.log("Duplicate Check Response Data:", response.data);
@@ -291,7 +288,9 @@ const UpdateStateForm = () => {
           }
         } else if (response.data.message === "No duplicate found") {
           // Explicitly handle the message indicating no duplicate
-          console.log("No duplicate found as per message. Proceeding with submission.");
+          console.log(
+            "No duplicate found as per message. Proceeding with submission."
+          );
         } else {
           // Unexpected duplication info
           console.warn(
@@ -305,7 +304,10 @@ const UpdateStateForm = () => {
         }
       } else {
         // Handle other status codes if necessary
-        console.warn("Received unexpected status code from duplicate check:", response.status);
+        console.warn(
+          "Received unexpected status code from duplicate check:",
+          response.status
+        );
         message.error(
           "Unexpected response from duplicate check. Please try again."
         );
@@ -314,8 +316,14 @@ const UpdateStateForm = () => {
       }
     } catch (error) {
       if (error.response) {
-        console.log("Duplicate Check Error Response Status:", error.response.status);
-        console.log("Duplicate Check Error Response Data:", error.response.data);
+        console.log(
+          "Duplicate Check Error Response Status:",
+          error.response.status
+        );
+        console.log(
+          "Duplicate Check Error Response Data:",
+          error.response.data
+        );
 
         if (error.response.status === 404) {
           // No duplicate exists, proceed
@@ -356,7 +364,8 @@ const UpdateStateForm = () => {
     if (Number(dailyLdg) === 0) {
       dailyLdg = "-";
     } else {
-      dailyLdg = dailyLdg.toString(); // Ensure it's a string
+      dailyLdg = parseInt(values.dailyLdg);
+      console.log(dailyLdg) // Ensure it's a string
     }
 
     // Compute updated values based on previous data
@@ -372,7 +381,7 @@ const UpdateStateForm = () => {
       sorties: sorties,
       nextGrdRun:
         flyingMinutes > 0
-          ? dayjs(values.date).add(6, "day").format("YYYY-MM-DD")
+          ? dayjs(values.preparedDate).add(7, "day").format("YYYY-MM-DD")
           : previousData.previousGrdRun,
       heliPresentHrs: convertToHoursMin(
         convertToMinutes(previousData.heliPresentHrs) + flyingMinutes
@@ -386,7 +395,9 @@ const UpdateStateForm = () => {
       mgbPresentHrs: convertToHoursMin(
         convertToMinutes(previousData.mgbPresentHrs) + flyingMinutes
       ),
-      totalLdg: previousData.totalLdg + (dailyLdg === "-" ? 0 : parseInt(dailyLdg, 10)),
+      dailyLdg : dailyLdg === 0 ? "-" : dailyLdg,
+      totalLdg:
+        previousData.totalLdg + (dailyLdg === "-" ? 0 : parseInt(dailyLdg, 10)),
       apuHrs: convertToHoursMin(
         convertToMinutes(previousData.apuHrs) +
           convertToMinutes(values.apuHours.format("HH:mm"))
@@ -413,7 +424,7 @@ const UpdateStateForm = () => {
         convertToMinutes(previousData.inspectionLeft) - flyingMinutes
       ),
       location: values.location,
-      inspectionCycle: values.inspectionCycle.split(/±|\+|-/)[0].trim(),
+      inspectionCycle: values.inspectionCycle,
       nextInspoh: values.nextInspoh,
       acMis: values.acMis,
       actionNotes: values.actionNotes,
@@ -424,7 +435,9 @@ const UpdateStateForm = () => {
     };
 
     try {
+      console.log(previousData.totalLdg + (dailyLdg === "-" ? 0 : parseInt(dailyLdg, 10)),)
       setFormData(outputData);
+      console.log(outputData.totalLdg)
       await submitHelicopterLog(outputData);
       await submitHelicopterPreviousData(outputData);
       message.success("Form submitted successfully!");
@@ -443,7 +456,10 @@ const UpdateStateForm = () => {
   /** Submit Helicopter Log **/
   const submitHelicopterLog = async (data) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/helicopterLogs/log`, data);
+      const response = await axiosInstance.post(
+        `${import.meta.env.VITE_API_URL}/api/helicopterLogs/log`,
+        data
+      );
       message.success("Log data saved successfully!");
       console.log("Log Server response:", response.data);
     } catch (error) {
@@ -456,11 +472,10 @@ const UpdateStateForm = () => {
   /** Submit Helicopter Previous Data **/
   const submitHelicopterPreviousData = async (data) => {
     try {
-      const inspectionCycleValue = data.inspectionCycle
-        .split(/±|\+|-/)[0]
-        .trim();
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/helicopters/serial/${data.heliSerNo}`,
+      const response = await axiosInstance.put(
+        `${import.meta.env.VITE_API_URL}/api/helicopters/serial/${
+          data.heliSerNo
+        }`,
         {
           heliPresentHrs: data.heliPresentHrs,
           engPresentHrsL: data.engPresentHrsL,
@@ -471,7 +486,7 @@ const UpdateStateForm = () => {
           apuSt: data.apuSt,
           apuAB: data.apuAB,
           genMode: data.genMode,
-          inspectionCycle: inspectionCycleValue,
+          inspectionCycle: data.inspectionCycle,
           inspectionLeft: data.inspectionLeft,
           nextGrdRun: data.nextGrdRun,
           actionNotes: data.actionNotes,
@@ -533,7 +548,7 @@ const UpdateStateForm = () => {
       {loading ? (
         <Spin tip="Loading data..." size="large" />
       ) : (
-        <Form 
+        <Form
           form={form}
           layout="vertical"
           onFinish={onFinish}
@@ -659,7 +674,9 @@ const UpdateStateForm = () => {
                       if (!isNaN(num) && num >= 0) {
                         return Promise.resolve();
                       }
-                      return Promise.reject("Please enter a valid number or '-'");
+                      return Promise.reject(
+                        "Please enter a valid number or '-'"
+                      );
                     },
                   },
                 ]}
@@ -792,11 +809,11 @@ const UpdateStateForm = () => {
                   className="w-full h-12 text-lg"
                   placeholder="Select inspection cycle"
                 >
-                  <Option value="25">25±5</Option>
-                  <Option value="50">50±10</Option>
-                  <Option value="100">100±5</Option>
-                  <Option value="200">200±5</Option>
-                  <Option value="300">300±5</Option>
+                  <Option value="25±5">25±5</Option>
+                  <Option value="50±10">50±10</Option>
+                  <Option value="100±5">100±5</Option>
+                  <Option value="200±5">200±5</Option>
+                  <Option value="300±5">300±5</Option>
                 </Select>
               </Form.Item>
             </Col>

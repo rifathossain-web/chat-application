@@ -111,10 +111,11 @@ const AirStateTable = ({ logs, onEdit, onDelete, showActions = true }) => {
                   {record.MgbHrsLeftForOH}
                 </td>
                 <td className={styles.cell} rowSpan="2">
-                  {record.dailyLdg || "-"}
+                  {record.dailyLdg}
                 </td>
                 <td className={styles.cell} rowSpan="2">
                   {record.totalLdg}
+                  {console.log(record.totalLdg)}
                 </td>
                 <td className={styles.cell} rowSpan="2">
                   {record.apuHrs}
@@ -128,12 +129,31 @@ const AirStateTable = ({ logs, onEdit, onDelete, showActions = true }) => {
                 <td className={styles.cell} rowSpan="2">
                   {record.genMode}
                 </td>
+                {/* First TD - Condition for inspectionCycle being 25±5 */}
                 <td className={styles.cell} rowSpan="2">
-                  <div>{record.inspectionCycle}</div>
-                  <div className="text-gray-500">{record.inspectionLeft}</div>
+                  {record.inspectionCycle === "25±5" ? (
+                    <>
+                      <div>{record.inspectionCycle}</div>
+                      <div className="font-bold">{record.inspectionLeft}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div>25±5</div>
+                      <div>-</div>
+                    </>
+                  )}
                 </td>
+
+                {/* Second TD - If inspectionCycle is not 25±5, display data here */}
                 <td className={styles.cell} rowSpan="2">
-                  {record.nextInspHoursLeft}
+                  {record.inspectionCycle !== "25±5" ? (
+                    <>
+                      <div>{record.inspectionCycle}</div>
+                      <div className="font-bold">{record.inspectionLeft}</div>
+                    </>
+                  ) : (
+                    <> {/* Blank for 25±5 cycles */} </>
+                  )}
                 </td>
                 <td className={styles.cell} rowSpan="2">
                   {record.location}
@@ -235,7 +255,10 @@ const AirStateTable = ({ logs, onEdit, onDelete, showActions = true }) => {
           <Input.TextArea
             value={editingRecord.actionNotes}
             onChange={(e) =>
-              setEditingRecord({ ...editingRecord, actionNotes: e.target.value })
+              setEditingRecord({
+                ...editingRecord,
+                actionNotes: e.target.value,
+              })
             }
             rows={4}
             className="mb-3"
@@ -251,8 +274,8 @@ const AirStateTable = ({ logs, onEdit, onDelete, showActions = true }) => {
             rows={4}
             className="mb-3"
           />
-           {/*  Notes */}
-           <label className="block mb-1">Notes:</label>
+          {/*  Notes */}
+          <label className="block mb-1">Notes:</label>
           <Input.TextArea
             value={editingRecord.notes}
             onChange={(e) =>

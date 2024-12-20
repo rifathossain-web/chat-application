@@ -1,12 +1,12 @@
 import { DownloadOutlined } from "@ant-design/icons";
 import { ConfigProvider, DatePicker, message, Tooltip } from "antd";
 import enGB from "antd/locale/en_GB";
-import axios from "axios";
 import dayjs from "dayjs";
 import "dayjs/locale/en";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useRef, useState } from "react";
+import axiosInstance from "../axios";
 import AirStateFooter from "./AirStateFooter";
 import AirStateTable from "./AirStateTable";
 
@@ -28,7 +28,7 @@ const Airstate = () => {
 
   const fetchHelicopterLogsByDate = async (apidate) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/helicopterLogs/logs`, {
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/helicopterLogs/logs`, {
         params: { date: apidate },
       });
       if (response.data.length > 0) {
@@ -52,7 +52,7 @@ const Airstate = () => {
 
   const handleEdit = async (updatedRecord) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/helicopterLogs/log/${updatedRecord._id}`, updatedRecord);
+      await axiosInstance.put(`${import.meta.env.VITE_API_URL}/api/helicopterLogs/log/${updatedRecord._id}`, updatedRecord);
       setLogs((prevLogs) =>
         prevLogs.map((log) =>
           log._id === updatedRecord._id ? updatedRecord : log
@@ -66,7 +66,7 @@ const Airstate = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/helicopterLogs/log/${id}`);
+      await axiosInstance.delete(`${import.meta.env.VITE_API_URL}/api/helicopterLogs/log/${id}`);
       setLogs((prevLogs) => prevLogs.filter((log) => log._id !== id));
       message.success("Log deleted successfully");
     } catch (error) {

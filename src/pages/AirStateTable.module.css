@@ -8,7 +8,7 @@
 .table {
   border: 1px solid #374151;
   width: 100%;
-  table-layout: fixed; 
+  table-layout: fixed;
   /* 
   Fixed layout to control column widths 
   */
@@ -45,7 +45,8 @@
 /* Data Row Styling */
 .dataRow {
   /* background-color: #ffffff; */
-  font-size: 0.75rem; /* Smaller font for data rows */
+  font-size: 0.75rem;
+  font-weight: bold; /* Smaller font for data rows */
 }
 
 .dataRow:nth-child(even) {
@@ -58,7 +59,6 @@
   border: 1px solid #374151;
   white-space: nowrap;
   text-align: center;
-  
 }
 
 /* Button Styling */

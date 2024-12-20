@@ -109,13 +109,13 @@ const HeliDetails = () => {
           {/* Inspection Section */}
           <Col span={12}>
             <h4>Inspection Cycle</h4>
-            <p>{convertTimeToDisplay(helicopter.inspectionCycle)}</p>
+            <p>{(helicopter.inspectionCycle)}</p>
           </Col>
           <Col span={12}>
             <h4>Inspection Left</h4>
-            <p>{convertTimeToDisplay(helicopter.inspectionLeft)} / {convertTimeToDisplay(helicopter.inspectionCycle)}</p>
+            <p>{convertTimeToDisplay(helicopter.inspectionLeft)} / {(helicopter.inspectionCycle)}</p>
             <Progress 
-              percent={calculateProgress(helicopter.inspectionLeft, helicopter.inspectionCycle)} 
+              percent={calculateProgress(helicopter.inspectionLeft, helicopter.inspectionCycle.split(/±|\+|-/)[0].trim())} 
               strokeColor="#52c41a" 
               format={percent => `${percent.toFixed(1)}%`}
             />
